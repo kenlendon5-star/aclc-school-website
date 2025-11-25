@@ -32,7 +32,7 @@ const menuItems = [
       },
       {
         icon: "/subject.png",
-        label: "Subjects",
+        label: "Courses",
         href: "/list/subjects",
         visible: ["admin"],
       },
@@ -44,7 +44,7 @@ const menuItems = [
       },
       {
         icon: "/lesson.png",
-        label: "Semesters",
+        label: "Subjects",
         href: "/list/lessons",
         visible: ["admin", "teacher"],
       },
@@ -78,12 +78,12 @@ const menuItems = [
         href: "/list/events",
         visible: ["admin", "teacher", "student", "parent"],
       },
-      {
-        icon: "/message.png",
-        label: "Messages",
-        href: "/list/messages",
-        visible: ["admin", "teacher", "student", "parent"],
-      },
+      // {
+      //   icon: "/message.png",
+      //   label: "Messages",
+      //   href: "/list/messages",
+      //   visible: ["admin", "teacher", "student", "parent"],
+      // },
       {
         icon: "/announcement.png",
         label: "Announcements",
@@ -99,7 +99,7 @@ const menuItems = [
         icon: "/profile.png",
         label: "Profile",
         href: "/user-profile",
-        visible: ["teacher", "student", "parent"],
+        visible: ["teacher", "student"],
       },
       //  {
       //   icon: "/setting.png",

@@ -112,7 +112,7 @@ const AssignmentForm = ({
             }
           >
             <option value="" disabled>
-              Select semester
+              Select Lesson
             </option>
             {lessons.map((lesson) => (
               <option key={lesson.id} value={lesson.id}>

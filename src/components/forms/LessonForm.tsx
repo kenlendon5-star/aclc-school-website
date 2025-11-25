@@ -51,7 +51,7 @@ const LessonForm = ({ type, data, setOpen, relatedData }: LessonFormProps) => {
 
   useEffect(() => {
     if (state.success) {
-      toast(`Lesson has been ${type === "create" ? "created" : "updated"}!`);
+      toast(`Subject has been ${type === "create" ? "created" : "updated"}!`);
       setOpen(false);
       router.refresh();
     }
@@ -62,12 +62,12 @@ const LessonForm = ({ type, data, setOpen, relatedData }: LessonFormProps) => {
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
       <h1 className="text-xl font-semibold">
-        {type === "create" ? "Create a new Semester" : "Update the semester"}
+        {type === "create" ? "Create a new subject" : "Update the subject"}
       </h1>
 
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
-          label="Semester name"
+          label="Subject name"
           name="name"
           defaultValue={data?.name || ""}
           register={register}
@@ -83,7 +83,7 @@ const LessonForm = ({ type, data, setOpen, relatedData }: LessonFormProps) => {
             hidden
           />
         )}
-        {/* <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Day</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
@@ -99,7 +99,7 @@ const LessonForm = ({ type, data, setOpen, relatedData }: LessonFormProps) => {
           {errors.day?.message && (
             <p className="text-xs text-red-400">{errors.day.message.toString()}</p>
           )}
-        </div> */}
+        </div>
 
         <InputField
           label="Start Time"
@@ -120,7 +120,7 @@ const LessonForm = ({ type, data, setOpen, relatedData }: LessonFormProps) => {
         />
 
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Subject</label>
+          <label className="text-xs text-gray-500">Course</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("subjectId")}
@@ -129,7 +129,7 @@ const LessonForm = ({ type, data, setOpen, relatedData }: LessonFormProps) => {
             }
           >
             <option value="" disabled>
-              Select subject
+              Select course
             </option>
             {subjects.map((subject) => (
               <option key={subject.id} value={subject.id}>
