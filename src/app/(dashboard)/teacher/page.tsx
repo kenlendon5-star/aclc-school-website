@@ -1,8 +1,9 @@
 import Announcements from "@/components/Announcements";
 import BigCalendarContainer from "@/components/BigCalendarContainer";
+import EventCalendarContainer from "@/components/EventCalendarContainer";
 import { auth } from "@clerk/nextjs/server";
 
-const TeacherPage = () => {
+const TeacherPage = ({ searchParams }: { searchParams: { [key: string]: string | undefined } }) => {
   const { userId } = auth();
   return (
     <div className="flex-1 p-4 flex gap-4 flex-col xl:flex-row">
@@ -15,6 +16,7 @@ const TeacherPage = () => {
       </div>
       {/* RIGHT */}
       <div className="w-full xl:w-1/3 flex flex-col gap-8">
+        <EventCalendarContainer searchParams={searchParams} />
         <Announcements />
       </div>
     </div>

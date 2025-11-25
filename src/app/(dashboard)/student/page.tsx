@@ -1,10 +1,10 @@
 import Announcements from "@/components/Announcements";
 import BigCalendarContainer from "@/components/BigCalendarContainer";
-import EventCalendar from "@/components/EventCalendar";
+import EventCalendarContainer from "@/components/EventCalendarContainer";
 import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 
-const StudentPage = async () => {
+const StudentPage = async ({ searchParams }: { searchParams: { [key: string]: string | undefined } }) => {
   const { userId } = auth();
 
   // Fetch the classes the student is enrolled in
@@ -42,7 +42,7 @@ const StudentPage = async () => {
 
       {/* RIGHT */}
       <div className="w-full xl:w-1/3 flex flex-col gap-8">
-        <EventCalendar />
+        <EventCalendarContainer searchParams={searchParams} />
         <Announcements />
       </div>
     </div>

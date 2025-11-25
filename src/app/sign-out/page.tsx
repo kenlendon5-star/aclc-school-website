@@ -12,6 +12,7 @@ const SignOutPage = () => {
     const doSignOut = async () => {
       await signOut();
       router.replace("/");
+      router.refresh();
     };
     doSignOut();
   }, [router, signOut]);
