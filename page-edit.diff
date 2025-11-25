@@ -1,0 +1,83 @@
+<section id="about" className="bg-white rounded-xl p-16 mb-32 max-w-5xl mx-auto text-gray-800 shadow-xl">
+            <h2 className="text-4xl font-bold mb-8 text-center">About Us</h2>
+            <p className="text-lg leading-relaxed text-center opacity-90">
+              ACLC School is dedicated to providing high-quality education through innovative technologies
+              and personalized learning experiences. Our mission is to foster academic excellence,
+              creativity, and community engagement in every student.
+            </p>
+          </section>
+=======
+          {/* About Us Section */}
+          <section id="about" className="bg-white rounded-xl p-16 mb-32 max-w-5xl mx-auto text-gray-800 shadow-xl">
+            <h2 className="text-4xl font-bold mb-8 text-center">About Us</h2>
+            <p className="text-lg leading-relaxed text-center opacity-90 mb-6">
+              ACLC School is dedicated to providing high-quality education through innovative technologies
+              and personalized learning experiences. Our mission is to foster academic excellence,
+              creativity, and community engagement in every student.
+            </p>
+            <p className="text-lg leading-relaxed text-center opacity-90 mb-6">
+              Established with a vision to empower the youth, ACLC School integrates advanced educational tools
+              with experienced faculty to nurture talents and skills critical for the future.
+            </p>
+            <p className="text-lg leading-relaxed text-center opacity-90">
+              Join our diverse community and benefit from a wide range of programs designed to support academic growth,
+              personal development, and social responsibility.
+            </p>
+          </section>
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+          {/* Contact Us Section */}
+          <section
+            id="contact"
+            className="bg-white rounded-xl p-16 max-w-5xl mx-auto text-gray-800 shadow-xl"
+          >
+            <h2 className="text-4xl font-bold mb-12 text-center">Contact Us</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+              {[{
+                icon: "/mail.png",
+                text: "contact@aclcschool.edu",
+              }, {
+                icon: "/phone.png",
+                text: "(053) 560 8000",
+              }, {
+                icon: "/location.png",
+                text: "Community College Lilia Avenue, Brgy. Cogon, Ormoc City, Philippines",
+              }].map((item, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col items-center space-y-4 hover:scale-105 transform transition duration-300"
+                >
+                  <Image src={item.icon} alt="Icon" width={54} height={54} />
+                  <span className="text-lg font-semibold">{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+=======
+          {/* Contact Us Section */}
+          <section
+            id="contact"
+            className="bg-white rounded-xl p-16 w-full text-gray-800 shadow-xl"
+          >
+            <h2 className="text-4xl font-bold mb-12 text-center">Contact Us</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center max-w-full mx-0">
+              {[{
+                icon: "/mail.png",
+                text: "contact@aclcschool.edu",
+              }, {
+                icon: "/phone.png",
+                text: "(053) 560 8000",
+              }, {
+                icon: "/location.png",
+                text: "Community College Lilia Avenue, Brgy. Cogon, Ormoc City, Philippines",
+              }].map((item, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col items-center space-y-4 hover:scale-105 transform transition duration-300"
+                >
+                  <Image src={item.icon} alt="Icon" width={54} height={54} />
+                  <span className="text-lg font-semibold">{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </section>

@@ -1,0 +1,54 @@
+href="#functionalities"
+                className="text-gray-700 hover:text-blue-600 font-semibold transition"
+              >
+                Functionalities
+              </Link>
+              <Link
+                href="#about"
+                className="text-gray-700 hover:text-blue-600 font-semibold transition"
+              >
+                About
+              </Link>
+              <Link
+                href="#highlights"
+                className="text-gray-700 hover:text-blue-600 font-semibold transition"
+              >
+                Highlights
+              </Link>
+              <Link
+                href="#contact"
+                className="text-gray-700 hover:text-blue-600 font-semibold transition"
+              >
+                Contact
+              </Link>
+=======
+              <Link
+                href="#functionalities"
+                className="text-gray-700 hover:text-blue-600 font-semibold transition"
+              >
+                Functionalities
+              </Link>
+              <Link
+                href="#about"
+                className="text-gray-700 hover:text-blue-600 font-semibold transition"
+              >
+                About
+              </Link>
+              <Link
+                href="#courses"
+                className="text-gray-700 hover:text-blue-600 font-semibold transition"
+              >
+                Courses
+              </Link>
+              <Link
+                href="#highlights"
+                className="text-gray-700 hover:text-blue-600 font-semibold transition"
+              >
+                Highlights
+              </Link>
+              <Link
+                href="#contact"
+                className="text-gray-700 hover:text-blue-600 font-semibold transition"
+              >
+                Contact
+              </Link>

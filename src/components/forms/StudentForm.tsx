@@ -23,7 +23,7 @@ import { toast } from "react-toastify";
 import { CldUploadWidget } from "next-cloudinary";
 
 // A safe placeholder image path. Make sure this exists in /public.
-const PLACEHOLDER = "/placeholder.png";
+const PLACEHOLDER = "/noAvatar.png";
 
 const StudentForm = ({
   type,
