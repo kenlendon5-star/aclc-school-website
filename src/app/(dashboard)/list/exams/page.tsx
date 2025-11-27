@@ -35,13 +35,13 @@ const columns = [
     accessor: "exam",
   },
   {
-    header: "Lesson",
-    accessor: "lesson",
+    header: "Subject",
+    accessor: "subject",
     className: "hidden md:table-cell",
   },
   {
-    header: "Subject",
-    accessor: "subject",
+    header: "Course",
+    accessor: "course",
     className: "hidden md:table-cell",
   },
   {

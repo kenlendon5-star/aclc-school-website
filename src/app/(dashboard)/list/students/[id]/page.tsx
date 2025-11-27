@@ -67,7 +67,7 @@ const SingleStudentPage = async ({
                 </div>
               </div>
               <p className="text-sm text-gray-500">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                I am an ACLC student and I can sing the AMA hymn perfectly.
               </p>
               <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
                 <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
@@ -135,7 +135,7 @@ const SingleStudentPage = async ({
                 <h1 className="text-xl font-semibold">
                   {student.class._count.lessons}
                 </h1>
-                <span className="text-sm text-gray-400">Lessons</span>
+                <span className="text-sm text-gray-400">Subjects</span>
               </div>
             </div>
             {/* CARD */}
@@ -169,7 +169,7 @@ const SingleStudentPage = async ({
               className="p-3 rounded-md bg-lamaSkyLight"
               href={`/list/lessons?classId=${student.class.id}`}
             >
-              Student&apos;s Lessons
+              Student&apos;s Subjects
             </Link>
             <Link
               className="p-3 rounded-md bg-lamaPurpleLight"

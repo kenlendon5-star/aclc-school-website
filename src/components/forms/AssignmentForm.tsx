@@ -126,13 +126,13 @@ const AssignmentForm = ({
           error={errors.dueDate}
         />
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Subject</label>
+          <label className="text-xs text-gray-500">Course</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             value={selectedSubject}
             onChange={(e) => setSelectedSubject(e.target.value)}
           >
-            <option value="">All subjects</option>
+            <option value="">All courses</option>
             {subjects.map((s) => (
               <option key={s.id} value={String(s.id)}>
                 {s.name}
@@ -158,7 +158,7 @@ const AssignmentForm = ({
         </div>
 
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Lesson</label>
+          <label className="text-xs text-gray-500">Subject</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("lessonId")}
@@ -167,7 +167,7 @@ const AssignmentForm = ({
             }
           >
             <option value="" disabled>
-              Select Lesson
+              Select subject
             </option>
             {filteredLessons.map((lesson) => (
               <option key={lesson.id} value={lesson.id}>

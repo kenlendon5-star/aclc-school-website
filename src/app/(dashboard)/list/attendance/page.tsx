@@ -1,85 +1,165 @@
+import FormContainer from "@/components/FormContainer";
+import Pagination from "@/components/Pagination";
+import Table from "@/components/Table";
+import TableSearch from "@/components/TableSearch";
+import TableFilterResetButton from "@/components/TableFilterResetButton";
+import TableSortButton from "@/components/TableSortButton";
+
 import prisma from "@/lib/prisma";
-import { Student, Attendance } from "@prisma/client";
+import { ITEM_PER_PAGE } from "@/lib/settings";
+import { Class, Prisma, Student } from "@prisma/client";
+import Image from "next/image";
 import Link from "next/link";
 
-const ITEMS_PER_PAGE = 20;
+import { getUserRole } from "@/lib/getUserRole";
 
-const AttendancePage = async ({ searchParams }: { searchParams?: { page?: string } }) => {
-  const page = searchParams?.page ? parseInt(searchParams.page) : 1;
+type StudentWithAttendance = Student & { class: Class; attendances: { present: boolean }[] };
 
-  // Fetch students with attendance this year
-  const studentsWithAttendance = await prisma.student.findMany({
-    include: {
-      attendances: {
-        where: {
-          date: {
-            gte: new Date(new Date().getFullYear(), 0, 1),
+const AttendancePage = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) => {
+  const role = await getUserRole();
+  const columns = [
+    {
+      header: "Info",
+      accessor: "info",
+    },
+    {
+      header: "Student ID",
+      accessor: "studentId",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "Year Level",
+      accessor: "yearLevel",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "Attendance %",
+      accessor: "attendancePercentage",
+    },
+    {
+      header: "Actions",
+      accessor: "action",
+    },
+  ];
+
+  const renderRow = (item: StudentWithAttendance) => {
+    const totalDays = item.attendances.length;
+    const presentDays = item.attendances.filter((a) => a.present).length;
+    const percentage = totalDays > 0 ? ((presentDays / totalDays) * 100).toFixed(2) + "%" : "-";
+
+    return (
+      <tr
+        key={item.id}
+        className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+      >
+        <td className="flex items-center gap-4 p-4">
+          <Image
+            src={item.img || "/noAvatar.png"}
+            alt=""
+            width={40}
+            height={40}
+            className="md:hidden xl:block w-10 h-10 rounded-full object-cover"
+          />
+          <div className="flex flex-col">
+            <h3 className="font-semibold">{item.name + " " + item.surname}</h3>
+            <p className="text-xs text-gray-500">{item.class.name}</p>
+          </div>
+        </td>
+        <td className="hidden md:table-cell">{item.username}</td>
+        <td className="hidden md:table-cell">{item.class.gradeId}</td>
+        <td>{percentage}</td>
+        <td>
+          <div className="flex items-center gap-2">
+            <Link href={`/list/students/${item.id}`}>
+              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaSky">
+                <Image src="/view.png" alt="" width={16} height={16} />
+              </button>
+            </Link>
+            {role === "admin" && (
+              <FormContainer table="student" type="delete" id={item.id} />
+            )}
+          </div>
+        </td>
+      </tr>
+    );
+  };
+
+  const { page, sort, ...queryParams } = searchParams;
+  const sortOrder = sort === "desc" ? "desc" : "asc";
+
+  const p = page ? parseInt(page) : 1;
+
+  // URL PARAMS CONDITION
+
+  const query: Prisma.StudentWhereInput = {};
+
+  if (queryParams) {
+    for (const [key, value] of Object.entries(queryParams)) {
+      if (value !== undefined) {
+        switch (key) {
+          case "teacherId":
+            query.class = {
+              lessons: {
+                some: {
+                  teacherId: value,
+                },
+              },
+            };
+            break;
+          case "search":
+            query.name = { contains: value, mode: "insensitive" };
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  }
+
+  const [data, count] = await prisma.$transaction([
+    prisma.student.findMany({
+      where: query,
+      include: {
+        class: true,
+        attendances: {
+          where: {
+            date: {
+              gte: new Date(new Date().getFullYear(), 0, 1),
+            },
           },
         },
       },
-    },
-    skip: ITEMS_PER_PAGE * (page - 1),
-    take: ITEMS_PER_PAGE,
-  });
-
-  const totalStudents = await prisma.student.count();
-
-  // Map student attendance summary
-  const attendanceSummary = studentsWithAttendance.map((student) => {
-    const totalDays = student.attendances.length;
-    const presentDays = student.attendances.filter((a) => a.present).length;
-    const percentage = totalDays > 0 ? (presentDays / totalDays) * 100 : 0;
-    return {
-      id: student.id,
-      name: student.name + " " + student.surname,
-      attendancePercentage: totalDays > 0 ? percentage.toFixed(2) + "%" : "-",
-    };
-  });
-
-  const totalPages = Math.ceil(totalStudents / ITEMS_PER_PAGE);
+      orderBy: { name: sortOrder },
+      take: ITEM_PER_PAGE,
+      skip: ITEM_PER_PAGE * (p - 1),
+    }),
+    prisma.student.count({ where: query }),
+  ]);
 
   return (
-    <div className="p-4 bg-white rounded-md">
-      <h1 className="text-xl font-semibold mb-4">Attendance Summary</h1>
-      <table className="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr>
-            <th className="border border-gray-300 px-4 py-2 text-left">Student Name</th>
-            <th className="border border-gray-300 px-4 py-2 text-left">Attendance Percentage</th>
-            <th className="border border-gray-300 px-4 py-2 text-left">Details</th>
-          </tr>
-        </thead>
-        <tbody>
-          {attendanceSummary.map((student) => (
-            <tr key={student.id} className="hover:bg-gray-100">
-              <td className="border border-gray-300 px-4 py-2">{student.name}</td>
-              <td className="border border-gray-300 px-4 py-2">{student.attendancePercentage}</td>
-              <td className="border border-gray-300 px-4 py-2">
-                <Link href={`/list/students/${student.id}`} className="text-blue-600 hover:underline">
-                  View
-                </Link>
-              </td>
-            </tr>
-          ))}
-          {attendanceSummary.length === 0 && (
-            <tr>
-              <td colSpan={3} className="text-center p-4">No attendance records found.</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-      {/* Pagination */}
-      <div className="mt-4 flex justify-center gap-2">
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
-          <Link
-            key={pageNumber}
-            href={`/list/attendance?page=${pageNumber}`}
-            className={`px-3 py-1 border rounded ${pageNumber === page ? "bg-blue-600 text-white" : "bg-white text-blue-600"}`}
-          >
-            {pageNumber}
-          </Link>
-        ))}
+    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
+      {/* TOP */}
+      <div className="flex items-center justify-between">
+        <h1 className="hidden md:block text-lg font-semibold">Attendance Summary</h1>
+        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+          <TableSearch />
+          <div className="flex items-center gap-4 self-end">
+            <TableFilterResetButton clearKeys={["teacherId"]} />
+            <TableSortButton />
+            {role === "admin" && (
+              <FormContainer table="student" type="create" />
+            )}
+          </div>
+        </div>
       </div>
+      {/* LIST */}
+      <Table columns={columns} renderRow={renderRow} data={data} />
+      {/* PAGINATION */}
+      <Pagination page={p} count={count} />
     </div>
   );
 };
