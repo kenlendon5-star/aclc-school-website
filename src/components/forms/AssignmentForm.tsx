@@ -6,7 +6,7 @@ import InputField from "../InputField";
 import { assignmentSchema, AssignmentSchema } from "@/lib/formValidationSchemas";
 import { createAssignment, updateAssignment } from "@/lib/actions";
 import { useFormState } from "react-dom";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
@@ -15,7 +15,9 @@ type AssignmentFormProps = {
   data?: any;
   setOpen: Dispatch<SetStateAction<boolean>>;
   relatedData?: {
-    lessons: { id: number; name: string }[];
+    lessons: { id: number; name: string; subjectId?: number; classId?: number }[];
+    subjects?: { id: number; name: string }[];
+    classes?: { id: number; name: string }[];
   };
 };
 
@@ -60,7 +62,28 @@ const AssignmentForm = ({
     }
   }, [router, setOpen, state, type]);
 
-  const { lessons = [] } = relatedData || {};
+  const { lessons = [], subjects = [], classes = [] } = relatedData || {};
+  const [selectedSubject, setSelectedSubject] = useState<string>("");
+  const [selectedClass, setSelectedClass] = useState<string>("");
+
+  useEffect(() => {
+    // If editing, initialize selected filters from the provided lesson
+    if (data?.lessonId) {
+      const current = lessons.find((l) => l.id === data.lessonId);
+      if (current) {
+        if (current.subjectId) setSelectedSubject(String(current.subjectId));
+        if (current.classId) setSelectedClass(String(current.classId));
+      }
+    }
+  }, [data?.lessonId, lessons]);
+
+  const filteredLessons = useMemo(() => {
+    return lessons.filter((l) => {
+      const bySubject = selectedSubject ? String(l.subjectId) === selectedSubject : true;
+      const byClass = selectedClass ? String(l.classId) === selectedClass : true;
+      return bySubject && byClass;
+    });
+  }, [lessons, selectedSubject, selectedClass]);
 
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
@@ -103,7 +126,39 @@ const AssignmentForm = ({
           error={errors.dueDate}
         />
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Semesters</label>
+          <label className="text-xs text-gray-500">Subject</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            value={selectedSubject}
+            onChange={(e) => setSelectedSubject(e.target.value)}
+          >
+            <option value="">All subjects</option>
+            {subjects.map((s) => (
+              <option key={s.id} value={String(s.id)}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500">Class</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            value={selectedClass}
+            onChange={(e) => setSelectedClass(e.target.value)}
+          >
+            <option value="">All classes</option>
+            {classes.map((c) => (
+              <option key={c.id} value={String(c.id)}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500">Lesson</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("lessonId")}
@@ -114,7 +169,7 @@ const AssignmentForm = ({
             <option value="" disabled>
               Select Lesson
             </option>
-            {lessons.map((lesson) => (
+            {filteredLessons.map((lesson) => (
               <option key={lesson.id} value={lesson.id}>
                 {lesson.name}
               </option>

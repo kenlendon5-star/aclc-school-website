@@ -81,22 +81,45 @@ const FormContainer = async ({ table, type, data, id }: FormContainerProps) => {
         };
         break;
       case "exam":
+        // Provide lessons plus subject and class lists for filtering; restrict by access
         const examLessons = await prisma.lesson.findMany({
           where: {
             ...(role === "teacher" ? { teacherId: currentUserId! } : {}),
           },
+          select: { id: true, name: true, subjectId: true, classId: true },
+        });
+        // Unique subject and class options based on accessible lessons
+        const examSubjectIds = Array.from(new Set(examLessons.map(l => l.subjectId)));
+        const examClassIds = Array.from(new Set(examLessons.map(l => l.classId)));
+        const examSubjects = await prisma.subject.findMany({
+          where: { id: { in: examSubjectIds.length ? examSubjectIds : [0] } },
           select: { id: true, name: true },
         });
-        relatedData = { lessons: examLessons };
+        const examClasses = await prisma.class.findMany({
+          where: { id: { in: examClassIds.length ? examClassIds : [0] } },
+          select: { id: true, name: true },
+        });
+        relatedData = { lessons: examLessons, subjects: examSubjects, classes: examClasses };
         break;
       case "assignment":
+        // Provide lessons plus subject and class lists for filtering; restrict by access
         const assignmentLessons = await prisma.lesson.findMany({
           where: {
             ...(role === "teacher" ? { teacherId: currentUserId! } : {}),
           },
+          select: { id: true, name: true, subjectId: true, classId: true },
+        });
+        const assignmentSubjectIds = Array.from(new Set(assignmentLessons.map(l => l.subjectId)));
+        const assignmentClassIds = Array.from(new Set(assignmentLessons.map(l => l.classId)));
+        const assignmentSubjects = await prisma.subject.findMany({
+          where: { id: { in: assignmentSubjectIds.length ? assignmentSubjectIds : [0] } },
           select: { id: true, name: true },
         });
-        relatedData = { lessons: assignmentLessons };
+        const assignmentClasses = await prisma.class.findMany({
+          where: { id: { in: assignmentClassIds.length ? assignmentClassIds : [0] } },
+          select: { id: true, name: true },
+        });
+        relatedData = { lessons: assignmentLessons, subjects: assignmentSubjects, classes: assignmentClasses };
         break;
       case "result":
         const resultStudents = await prisma.student.findMany({
